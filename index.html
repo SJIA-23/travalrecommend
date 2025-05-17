@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智慧行程推薦器</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .section { margin-bottom: 20px; }
+    .route { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    select, button { padding: 5px 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>旅遊行程推薦系統</h1>
+
+  <!-- 模擬搜尋紀錄 -->
+  <div class="section">
+    <h2>是否有搜尋紀錄？</h2>
+    <button onclick="useSearchHistory()">使用搜尋紀錄</button>
+    <button onclick="showManualSelect()">手動選擇地點</button>
+  </div>
+
+  <!-- 手動選擇地點 -->
+  <div class="section" id="manual-select" style="display: none;">
+    <h2>請選擇目的地</h2>
+    <label>國家：
+      <select id="country">
+        <option value="日本">日本</option>
+        <option value="法國">法國</option>
+        <option value="台灣">台灣</option>
+        <option value="馬來西亞">馬來西亞</option>
+        <option value="泰國">泰國</option>
+        <option value="韓國">韓國</option>
+      </select>
+    </label>
+    <label>城市：
+      <select id="city">
+        <option value="東京">東京</option>
+        <option value="巴黎">巴黎</option>
+        <option value="台北">台北</option>
+      </select>
+    </label>
+    <button onclick="generateRoutes()">產生行程</button>
+  </div>
+
+  <!-- 顯示推薦路線 -->
+  <div class="section" id="route-results">
+    <h2>推薦行程</h2>
+    <div id="routes"></div>
+  </div>
+
+  <script>
+    function useSearchHistory() {
+      // 假設使用者搜尋過「日本 東京 櫻花 美食」
+      const interests = ['櫻花', '美食'];
+      const city = '東京';
+      generateRoutes(city, interests);
+    }
+
+    function showManualSelect() {
+      document.getElementById('manual-select').style.display = 'block';
+    }
+
+    function generateRoutes(city = null, interests = []) {
+      if (!city) {
+        const citySelect = document.getElementById('city');
+        city = citySelect.value;
+      }
+
+      if (interests.length === 0) {
+        // 根據城市給出預設興趣主題
+        interests = ['觀光', '美食', '文化'];
+      }
+
+      const routesContainer = document.getElementById('routes');
+      routesContainer.innerHTML = '';
+
+      for (let i = 1; i <= 3; i++) {
+        const routeDiv = document.createElement('div');
+        routeDiv.className = 'route';
+        routeDiv.innerHTML = `<h3>行程 ${i}</h3>
+          <p>目的地：${city}</p>
+          <p>主題：${interests[i - 1]}</p>
+          <p>建議景點：${generateSamplePlaces(city, interests[i - 1])}</p>`;
+        routesContainer.appendChild(routeDiv);
+      }
+    }
+
+    function generateSamplePlaces(city, interest) {
+      // 簡單模擬建議景點
+      const samples = {
+        '東京': {
+          '櫻花': ['上野公園', '目黑川'],
+          '美食': ['築地市場', '拉麵街'],
+          '文化': ['淺草寺', '明治神宮'],
+          '觀光': ['東京鐵塔', '晴空塔']
+        },
+        '巴黎': {
+          '觀光': ['艾菲爾鐵塔', '凱旋門'],
+          '美食': ['瑪黑區甜點', '巴黎咖啡館'],
+          '文化': ['羅浮宮', '奧賽美術館']
+        },
+        '台北': {
+          '觀光': ['101大樓', '象山'],
+          '美食': ['士林夜市', '永康街牛肉麵'],
+          '文化': ['國立故宮博物院', '中正紀念堂']
+        }
+      };
+
+      const places = samples[city]?.[interest] || ['景點一', '景點二'];
+      return places.join(', ');
+    }
+  </script>
+
+</body>
+</html>
